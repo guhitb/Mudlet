@@ -908,6 +908,7 @@ bool TMainConsole::hideWindow(const QString& name)
 
 bool TMainConsole::printWindow(const QString& name, const QString& text)
 {
+    qDebug() << "printWindow";
     auto pC = mSubConsoleMap.value(name);
     auto pL = mLabelMap.value(name);
     if (pC) {

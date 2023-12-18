@@ -1785,6 +1785,7 @@ void TConsole::echoLink(const QString& text, QStringList& func, QStringList& hin
 // An overload of print(const QString& msg):
 void TConsole::print(const char* txt)
 {
+    qDebug() << "print3 " << txt;
     const QString msg(txt);
     print(msg);
 }
@@ -1792,6 +1793,7 @@ void TConsole::print(const char* txt)
 // echoUserWindow(const QString& msg) was a redundant wrapper around this method:
 void TConsole::print(const QString& msg)
 {
+    qDebug() << "print1 " << msg;
     buffer.append(msg, 0, msg.size(), mFormatCurrent.foreground(), mFormatCurrent.background(), mFormatCurrent.allDisplayAttributes());
     mUpperPane->showNewLines();
     mLowerPane->showNewLines();
@@ -1799,12 +1801,14 @@ void TConsole::print(const QString& msg)
     if (Q_UNLIKELY(mudlet::self()->smMirrorToStdOut)) {
         qDebug().nospace().noquote() << qsl("%1| %2").arg(mConsoleName, msg);
     }
+    qDebug() << "print1 done" << msg;
 }
 
 // printDebug(QColor& c, QColor& d, const QString& msg) was functionally the
 // same as this method it was just that the arguments were in a different order
 void TConsole::print(const QString& msg, const QColor fgColor, const QColor bgColor)
 {
+    qDebug() << "print2 " << msg;
     buffer.append(msg, 0, msg.size(), fgColor, bgColor);
     mUpperPane->showNewLines();
     mLowerPane->showNewLines();
@@ -1812,6 +1816,7 @@ void TConsole::print(const QString& msg, const QColor fgColor, const QColor bgCo
     if (Q_UNLIKELY(mudlet::self()->smMirrorToStdOut)) {
         qDebug().nospace().noquote() << qsl("%1| %2").arg(mConsoleName, msg);
     }
+    qDebug() << "print2 done" << msg;
 }
 
 void TConsole::printSystemMessage(const QString& msg)
@@ -1822,11 +1827,13 @@ void TConsole::printSystemMessage(const QString& msg)
 
 void TConsole::echo(const QString& msg)
 {
+    qDebug() << "echo " << msg;
     if (mTriggerEngineMode) {
         buffer.appendLine(msg, 0, msg.size() - 1, mFormatCurrent.foreground(), mFormatCurrent.background(), mFormatCurrent.allDisplayAttributes());
     } else {
         print(msg);
     }
+    qDebug() << "echo done " << msg;
 }
 
 void TConsole::copy()
@@ -1866,6 +1873,7 @@ void TConsole::appendBuffer()
 
 void TConsole::appendBuffer(const TBuffer& bufferSlice)
 {
+    qDebug() << "tconsoleappendbuffer ";
     buffer.appendBuffer(bufferSlice);
     mUpperPane->showNewLines();
     mLowerPane->showNewLines();

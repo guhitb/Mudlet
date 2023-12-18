@@ -2143,6 +2143,7 @@ void TBuffer::resetColors()
 
 void TBuffer::append(const QString& text, int sub_start, int sub_end, TChar format, int linkID)
 {
+    qDebug() << "ODD APPEND!!!!!!!!!!!!!!" << text;
     // CHECK: What about other Unicode line breaks, e.g. soft-hyphen:
     const QString lineBreaks = qsl(",.- ");
 
@@ -2257,6 +2258,7 @@ void TBuffer::append(const QString& text, int sub_start, int sub_end, const QCol
 {
     // CHECK: What about other Unicode line breaks, e.g. soft-hyphen:
     const QString lineBreaks = qsl(",.- ");
+    qDebug() << "appending " << text;
 
     if (static_cast<int>(buffer.size()) > mLinesLimit) {
         shrinkBuffer();
@@ -2284,12 +2286,14 @@ void TBuffer::append(const QString& text, int sub_start, int sub_end, const QCol
     if (sub_end >= length) {
         sub_end = text.size() - 1;
     }
+    QString indentString = QString("h  h");
 
     for (int i = sub_start; i < length; ++i) {
         if (text.at(i) == '\n') {
             log(size() - 1, size() - 1);
             std::deque<TChar> const newLine;
             buffer.push_back(newLine);
+            lineBuffer.push_back(indentString);
             lineBuffer.push_back(QString());
             timeBuffer << blankTimeStamp;
             promptBuffer << false;
@@ -2312,19 +2316,23 @@ void TBuffer::append(const QString& text, int sub_start, int sub_end, const QCol
 
                     int restOfLine = lineRest.size();
                     if (restOfLine > 0) {
+                        qDebug() << "rest of line: " << lineRest;
                         while (restOfLine > 0) {
                             newLine.push_front(buffer.back().back());
                             buffer.back().pop_back();
                             restOfLine--;
                         }
                     }
-
                     buffer.push_back(newLine);
-                    if (lineRest.size() > 0) {
-                        lineBuffer.append(lineRest);
-                    } else {
-                        lineBuffer.append(QString());
-                    }
+                   /*  if (lineRest.size() > 0) { */
+                    //     lineBuffer.append(lineRest);
+                    // qDebug() << "::::::" << indentString+lineRest;
+                        lineBuffer.append(indentString+lineRest);
+                    // } else {
+                    //     lineBuffer.back().append(indentString);
+                    // }
+
+                    qDebug() << "newline start:" << lineBuffer.back();
                     timeBuffer << blankTimeStamp;
                     promptBuffer << false;
                     log(size() - 2, size() - 2);
@@ -2335,6 +2343,7 @@ void TBuffer::append(const QString& text, int sub_start, int sub_end, const QCol
                 }
             }
         }
+        //lineBuffer.back().append(indentString);
         lineBuffer.back().append(text.at(i));
         const TChar c(fgColor, bgColor, (mEchoingText ? (TChar::Echo | flags) : flags), linkID);
         buffer.back().push_back(c);
@@ -2520,6 +2529,7 @@ void TBuffer::paste(QPoint& P, const TBuffer& chunk)
 // This only appends the FIRST line of chunk:
 void TBuffer::appendBuffer(const TBuffer& chunk)
 {
+        qDebug() << "appendbuffer" ;
     if (chunk.buffer.empty()) {
         return;
     }
@@ -2534,6 +2544,7 @@ void TBuffer::appendBuffer(const TBuffer& chunk)
             id = 0;
         }
         const QString s(chunk.lineBuffer.at(0).at(cx));
+        qDebug() << "appending" << s ;
         append(s, 0, 1, chunk.buffer.at(0).at(cx).mFgColor, chunk.buffer.at(0).at(cx).mBgColor, chunk.buffer.at(0).at(cx).mFlags, id);
     }
 
@@ -2562,6 +2573,7 @@ int TBuffer::calculateWrapPosition(int lineNumber, int begin, int end)
 
 inline int TBuffer::skipSpacesAtBeginOfLine(const int row, const int column)
 {
+    qDebug() << "skipping spaces at begin of line";
     int offset = 0;
     int position = column;
     const int endOfLinePosition = lineBuffer.at(row).size();

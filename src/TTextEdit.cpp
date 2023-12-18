@@ -477,10 +477,13 @@ inline uint TTextEdit::getGraphemeBaseCharacter(const QString& str) const
 
 void TTextEdit::drawLine(QPainter& painter, int lineNumber, int lineOfScreen, int* offset) const
 {
+    asm("int $3");
     QPoint cursor(-mCursorX, lineOfScreen);
     QString lineText = mpBuffer->lineBuffer.at(lineNumber);
+    qDebug() << "drawLine() lineText = " << lineText;
     QTextBoundaryFinder boundaryFinder(QTextBoundaryFinder::Grapheme, lineText);
     int currentSize = lineText.size();
+    qDebug() << "lineText.size() = " << currentSize;
     if (mShowTimeStamps) {
         TChar timeStampStyle(QColor(200, 150, 0), QColor(22, 22, 22));
         QString timestamp(mpBuffer->timeBuffer.at(lineNumber));

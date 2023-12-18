@@ -11036,6 +11036,7 @@ int TLuaInterpreter::addSupportedTelnetOption(lua_State* L)
 // Documentation: https://wiki.mudlet.org/w/Manual:Lua_Functions#echo
 int TLuaInterpreter::echo(lua_State* L)
 {
+    qDebug() << "ECHO START LUA INT";
     Host& host = getHostFromLua(L);
 
     QString consoleName;
@@ -11055,12 +11056,15 @@ int TLuaInterpreter::echo(lua_State* L)
         // Writing to the main window must always succeed, but for consistent
         // results, we now return a true for that
         lua_pushboolean(L, true);
+        qDebug() << "ECHO START LUA INT end 1";
         return 1;
     }
     if (!host.echoWindow(consoleName, displayText)) {
+        qDebug() << "ECHO START LUA INT end 2";
         return warnArgumentValue(L, __func__, qsl("console/label '%1' does not exist").arg(consoleName));
     }
     lua_pushboolean(L, true);
+    qDebug() << "ECHO START LUA INT end 3";
     return 1;
 }
 
@@ -14057,6 +14061,7 @@ void TLuaInterpreter::setMatches(lua_State* L)
 // No documentation available in wiki - internal function
 bool TLuaInterpreter::call_luafunction(void* pT)
 {
+    qDebug() << "INTERP CALL";
     lua_State* L = pGlobalLua;
     lua_pushlightuserdata(L, pT);
     lua_gettable(L, LUA_REGISTRYINDEX);
@@ -14087,6 +14092,7 @@ bool TLuaInterpreter::call_luafunction(void* pT)
         }
         lua_pop(L, lua_gettop(L));
         //lua_settop(L, 0);
+        qDebug() << "INTERP CALL error";
         return !error;
 
     }
@@ -14095,6 +14101,7 @@ bool TLuaInterpreter::call_luafunction(void* pT)
     const QString _n2 = "func reference not found by Lua, func cannot be called";
     std::string e = "Lua error:";
     logError(e, _n, _n2);
+    qDebug() << "INTERP CALL end";
     return false;
 }
 
@@ -14179,6 +14186,7 @@ std::pair<bool, bool> TLuaInterpreter::callLuaFunctionReturnBool(void* pT)
 // to cut down on spammy output if things are okay.
 bool TLuaInterpreter::call(const QString& function, const QString& mName, const bool muteDebugOutput)
 {
+    qDebug() << "INTERP CALLddd";
     lua_State* L = pGlobalLua;
     setMatches(L);
 
@@ -14204,6 +14212,7 @@ bool TLuaInterpreter::call(const QString& function, const QString& mName, const 
         }
     }
     lua_pop(L, lua_gettop(L));
+    qDebug() << "INTERP CALLdddsdfddw";
 
     return (error);
 }
